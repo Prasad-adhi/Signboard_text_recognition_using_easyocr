@@ -9,7 +9,8 @@ def detect_recognise(l_from,l_to,path):
     translate_text=""
     for i in range(len(output)): 
         try:
-            translate_text += translator.translate(output[i][1],lang_tgt=l_to) 
+            if(output[i][2]>0.4):
+                translate_text += translator.translate(output[i][1],lang_tgt=l_to) 
         except:
             print() 
     return translate_text

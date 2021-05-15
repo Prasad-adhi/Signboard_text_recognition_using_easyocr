@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            var uploadedimage;
+            function captureFile()
+            {
+                let file = document.getElementById("file-id").files;
+                let filereader = new FileReader();
+                filereader.onload = function(filedata)
+                {
+                    // custom function , filedata.target.result -> contains nase64 string
+                    let image = document.getElementById("image");
+                    image.src=filedata.target.result;
+                    uploadedimage=image.src;
+                }
+                filereader.readAsDataURL(file[0]);
+            }
+            /*
+            function loadDoc()
+            {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() 
+                {
+                    if (this.readyState == 4 && this.status == 200) 
+                    {
+                        output=JSON.parse(this.responseText);
+                        string=""
+                        document.getElementById("output").innerHTML=output["text"]+"<br>"
+                    }
+                };
+                xhttp.open("GET", "http://127.0.0.1:5000/image_data", true);
+                xhttp.send();
+            }*/
+        </script>
+    </head>
+    <body>
+        <h1>Sign board translator</h1><br>
+        <form method="POST" action="/image_data" enctype="multipart/form-data">
+            From:
+            <select name="from">
+                <option value="hi">Hindi</option>
+                <option value="ta">Tamil</option>
+                <option value="as">Assamese</option>
+                <option value="en">English</option>
+                <option value="bn">Bengali</option>
+                <option value="ka">Kannada</option>
+                <option value="mr">Marathi</option>
+                <option value="te">Telugu</option>
+                <option value="ur">Urdu</option>
+            </select><br>
+            To:
+            <select name="to">
+                <option value="hi">Hindi</option>
+                <option value="ta">Tamil</option>
+                <option value="as">Assamese</option>
+                <option value="en">English</option>
+                <option value="bn">Bengali</option>
+                <option value="ka">Kannada</option>
+                <option value="mr">Marathi</option>
+                <option value="te">Telugu</option>
+                <option value="ur">Urdu</option>
+            </select><br>
+            Select image
+            <input type="file" onchange="captureFile()" id="file-id" name="img1"><br>
+            <img id="image"><br>
+            <button type="submit">Translate</button><br>
+            <div id="output"></div>
+        </form>
+    </body>
+</html>

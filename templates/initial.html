@@ -3,6 +3,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script>
+            
             var uploadedimage;
             function captureFile()
             {
@@ -17,9 +18,14 @@
                 }
                 filereader.readAsDataURL(file[0]);
             }
-            /*
-            function loadDoc()
+            
+            function loadDoc(event)
             {
+                event.preventDefault();
+                var form=new FormData()
+                form.append("from",document.getElementsByName("from")[0].value)
+                form.append("to",document.getElementsByName("to")[0].value)
+                form.append("img1",document.getElementsByName("img1")[0].files[0])
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() 
                 {
@@ -30,14 +36,14 @@
                         document.getElementById("output").innerHTML=output["text"]+"<br>"
                     }
                 };
-                xhttp.open("GET", "http://127.0.0.1:5000/image_data", true);
-                xhttp.send();
-            }*/
+                xhttp.open("POST", "http://127.0.0.1:5000/image_data", true);
+                xhttp.send(form);
+            }
         </script>
     </head>
     <body>
         <h1>Sign board translator</h1><br>
-        <form method="POST" action="/image_data" enctype="multipart/form-data">
+        <form method="POST" action="/image_data" enctype="multipart/form-data" onsubmit="loadDoc(event)">
             From:
             <select name="from">
                 <option value="hi">Hindi</option>
@@ -64,7 +70,8 @@
             </select><br>
             Select image
             <input type="file" onchange="captureFile()" id="file-id" name="img1"><br>
-            <img id="image"><br>
+            <!--<a href="/store_file"><button onclick="display_image()">Choose file</button></a><br>-->
+            <img id="image" height="200" width="200"><br>
             <button type="submit">Translate</button><br>
             <div id="output"></div>
         </form>

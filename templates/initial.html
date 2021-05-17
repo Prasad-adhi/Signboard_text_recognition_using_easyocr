@@ -1,79 +1,150 @@
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script>
-            
-            var uploadedimage;
-            function captureFile()
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        
+        var uploadedimage;
+        function captureFile()
+        {
+            let file = document.getElementById("file-id").files;
+            let filereader = new FileReader();
+            filereader.onload = function(filedata)
             {
-                let file = document.getElementById("file-id").files;
-                let filereader = new FileReader();
-                filereader.onload = function(filedata)
+                // custom function , filedata.target.result -> contains base64 string
+                let image = document.getElementById("image");
+                image.src=filedata.target.result;
+                uploadedimage=image.src;
+            }
+            filereader.readAsDataURL(file[0]);
+        }
+        
+        function loadDoc(event)
+        {
+            event.preventDefault();
+            var form=new FormData()
+            form.append("from",document.getElementsByName("from")[0].value)
+            form.append("to",document.getElementsByName("to")[0].value)
+            form.append("img1",document.getElementsByName("img1")[0].files[0])
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() 
+            {
+                if (this.readyState == 4 && this.status == 200) 
                 {
-                    // custom function , filedata.target.result -> contains nase64 string
-                    let image = document.getElementById("image");
-                    image.src=filedata.target.result;
-                    uploadedimage=image.src;
+                    output=JSON.parse(this.responseText);
+                    string=""
+                    document.getElementById("output").innerHTML="<center>"+"Translated text: "+output["text"]+"</center>"+"<br>"
                 }
-                filereader.readAsDataURL(file[0]);
-            }
-            
-            function loadDoc(event)
-            {
-                event.preventDefault();
-                var form=new FormData()
-                form.append("from",document.getElementsByName("from")[0].value)
-                form.append("to",document.getElementsByName("to")[0].value)
-                form.append("img1",document.getElementsByName("img1")[0].files[0])
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() 
-                {
-                    if (this.readyState == 4 && this.status == 200) 
-                    {
-                        output=JSON.parse(this.responseText);
-                        string=""
-                        document.getElementById("output").innerHTML=output["text"]+"<br>"
-                    }
-                };
-                xhttp.open("POST", "http://127.0.0.1:5000/image_data", true);
-                xhttp.send(form);
-            }
-        </script>
-    </head>
-    <body>
-        <h1>Sign board translator</h1><br>
-        <form method="POST" action="/image_data" enctype="multipart/form-data" onsubmit="loadDoc(event)">
-            From:
-            <select name="from">
-                <option value="hi">Hindi</option>
-                <option value="ta">Tamil</option>
-                <option value="as">Assamese</option>
-                <option value="en">English</option>
-                <option value="bn">Bengali</option>
-                <option value="ka">Kannada</option>
-                <option value="mr">Marathi</option>
-                <option value="te">Telugu</option>
-                <option value="ur">Urdu</option>
-            </select><br>
-            To:
-            <select name="to">
-                <option value="hi">Hindi</option>
-                <option value="ta">Tamil</option>
-                <option value="as">Assamese</option>
-                <option value="en">English</option>
-                <option value="bn">Bengali</option>
-                <option value="ka">Kannada</option>
-                <option value="mr">Marathi</option>
-                <option value="te">Telugu</option>
-                <option value="ur">Urdu</option>
-            </select><br>
-            Select image
-            <input type="file" onchange="captureFile()" id="file-id" name="img1"><br>
-            <!--<a href="/store_file"><button onclick="display_image()">Choose file</button></a><br>-->
-            <img id="image" height="200" width="200"><br>
-            <button type="submit">Translate</button><br>
-            <div id="output"></div>
-        </form>
-    </body>
+            };
+            xhttp.open("POST", "http://127.0.0.1:5000/image_data", true);
+            xhttp.send(form);
+        }
+    </script>
+</head>
+<style>
+    body{
+      margin-bottom: 0%;
+      background-image: url("https://images.unsplash.com/photo-1562776903-cc60d622df72?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3900&q=80");
+      background-size: cover;
+      min-height:100%;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      backdrop-filter: blur(8px);
+
+    }
+    h1{
+        margin-bottom: 2rem;
+        font-family:Arial, Helvetica, sans-serif;
+        font-style: italic;
+        font-weight: bold;
+    }
+    legend{
+      font-weight: 600;
+    }
+    form{
+        margin : 1rem 20rem 1rem 20rem;
+    }
+    button{
+        width: 100%;
+    }
+    fieldset{
+        background-color: white;
+        margin-top : 1rem;
+        margin-bottom : 1rem;
+        padding: 1rem 2rem 1rem 2rem;
+        border-radius: 8px;
+    }
+    label[for]{
+        font-weight: bold;
+    }
+    #output{
+        font-weight: bold;
+        margin-top: 2rem;
+        font-size: 150%;
+    }
+</style>
+<body>
+    <p><br></p>
+    <h1><center>Sign board translator</center></h1>
+    <form method="POST" action="/image_data" enctype="multipart/form-data" onsubmit="loadDoc(event)">
+        <fieldset>
+            <div class="form-row">
+               <div class="col">
+                  <div class="form-group">
+                     <label for="from">From</label>
+                     <select name="from" class="form-control">
+                        <option value="hi">Hindi</option>
+                        <option value="ta">Tamil</option>
+                        <option value="as">Assamese</option>
+                        <option value="en">English</option>
+                        <option value="bn">Bengali</option>
+                        <option value="ka">Kannada</option>
+                        <option value="mr">Marathi</option>
+                        <option value="te">Telugu</option>
+                        <option value="ur">Urdu</option>
+                    </select>
+                  </div>
+               </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                   <div class="form-group">
+                      <label for="to">To</label>
+                      <select name="to" class="form-control">
+                         <option value="hi">Hindi</option>
+                         <option value="ta">Tamil</option>
+                         <option value="as">Assamese</option>
+                         <option value="en">English</option>
+                         <option value="bn">Bengali</option>
+                         <option value="ka">Kannada</option>
+                         <option value="mr">Marathi</option>
+                         <option value="te">Telugu</option>
+                         <option value="ur">Urdu</option>
+                     </select>
+                   </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                   <div class="form-group">
+                      <label for="file-id">Select image</label>
+                      <input type="file" onchange="captureFile()" id="file-id" name="img1" class="form-control-file"> 
+                   </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                   <div class="form-group">
+                     <center><img id="image" height="300" width="550"></center>
+                   </div>
+                </div>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-info">Translate</button><br>
+        <div id="output"></div><br><br>
+    </form>
+</body>
 </html>
